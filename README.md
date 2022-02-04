@@ -1,34 +1,22 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Sol-minter 
 
-## Getting Started
+A lightning-fast NFT minter on Solana. The UI is made simple so that the audience who is new to the Web3 world can also utilize it.
+The function is to allow the user to upload any image that he/she likes and the dApp converts that into an NFT and delivers it to the User's wallet. 
 
-First, run the development server:
+## Workflow
+- User logs in via Phantom Wallet 
+- User fills in the details like the funky NFT Name and its awesome description and also uploads the image. 
+- After hitting Submit, blockchain magic happens and within a few seconds, the image is now an NFT delivered to the User's wallet. 
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+## Functioning ( Blockchain Magic)
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- On the backend side of the website after collecting the data from the User, the image gets uploaded to Inter Planetary File System ( IPFS ) which is a decentralized platform to store files. 
+- The rest details are added with the image URI in a JSON file that follows the JSON Schema required by the Solana Ecosystem to mint the NFT. 
+- This JSON file is also uploaded on IPFS and is the URI is later forwarded to the Metaplex Functions. 
+- Metaplex JS does the task of minting the NFT and sending it to the User, Metaplex is a toolset built upon Solana Program Library. 
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+## Goal
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- Providing a simple fast NFT minter, something which acts as a bridge for all the Web2 people to get on board with the crypto roller coaster. 
+ 
