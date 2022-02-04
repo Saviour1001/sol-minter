@@ -8,7 +8,9 @@ import {
   Connection,
   Keypair,
   LAMPORTS_PER_SOL,
+  PublicKey,
 } from "@solana/web3.js";
+import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
 export default function Home() {
   const { Moralis } = useMoralis();
@@ -32,12 +34,36 @@ export default function Home() {
     alert("Logout successful");
   }
 
+  const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
+    "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
+  );
+
+  let associatedAddress = "";
+
+  async function findAssociatedTokenAddress(walletAddress, tokenMintAddress) {
+    const array = await PublicKey.findProgramAddress(
+      [
+        walletAddress.toBuffer(),
+        TOKEN_PROGRAM_ID.toBuffer(),
+        tokenMintAddress.toBuffer(),
+      ],
+      SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
+    );
+    associatedAddress = array[0];
+    console.log(associatedAddress);
+  }
+
   async function toTheMoon() {
     // Storing the file
     console.log("Uploading the image");
+
     const keypair = Keypair.generate();
-    console.log(keypair.publicKey.toBase58());
+    const wallet = new NodeWallet(keypair);
     let user = Moralis.User.current();
+    const userWallet = new PublicKey(user.get("solAddress"));
+
+    console.log(keypair.publicKey.toBase58());
+
     const fileInput = document.getElementById("file");
     const data = fileInput.files[0];
     const imageFile = new Moralis.File(data.name, data);
@@ -87,16 +113,37 @@ export default function Home() {
       LAMPORTS_PER_SOL
     );
     await connection.confirmTransaction(feePayerAirdropSignature);
+    let mintaddress = "";
     const mintNFTResponse = await actions
       .mintNFT({
         connection,
-        wallet: new NodeWallet(keypair),
+        wallet: wallet,
         uri: metadataURI,
         maxSupply: 1,
       })
       .then((mintNFTResponse) => {
         console.log(mintNFTResponse);
+        mintaddress = mintNFTResponse.mint;
         alert("Mint successful");
+        console.log("Mint address: ", mintaddress);
+      });
+
+    // sending the token to the user
+
+    await findAssociatedTokenAddress(keypair.publicKey, mintaddress);
+
+    const sendingToken = await actions
+      .sendToken({
+        connection,
+        amount: 1,
+        destination: userWallet,
+        source: associatedAddress,
+        wallet: wallet,
+        mint: mintaddress,
+      })
+      .then((sendTokenResponse) => {
+        console.log(sendTokenResponse);
+        alert("Send successful");
       });
   }
   return (
