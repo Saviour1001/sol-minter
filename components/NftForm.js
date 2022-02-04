@@ -83,8 +83,7 @@ function NftForm() {
     <div
       style={{
         margin: "auto auto",
-        width: "40%",
-        border: "1px solid black",
+        width: "32%",
         height: "400px",
       }}
     >
@@ -96,16 +95,28 @@ function NftForm() {
         }}
       >
         <Input
+          width="100%"
           label="NFT Name"
           name="NFT Name"
           onChange={(e) => setNFTName(e.target.value)}
+          style={{ marginBottom: "20px", marginTop: "30%" }}
         />
         <TextArea
+          width="100%"
           label="NFT Description"
           name="NFT Description"
           onChange={(e) => setNFTDescription(e.target.value)}
+          style={{ marginBottom: "20px" }}
         />
-        <input type="file" id="file" />
+        <input
+          type="file"
+          id="file"
+          style={{
+            marginBottom: "40px",
+            marginTop: "30px",
+            alignSelf: "center",
+          }}
+        />
         <Button
           id="test-button-primary-large"
           onClick={uploadAndMintNFT}
@@ -113,6 +124,7 @@ function NftForm() {
           text="Mint NFT"
           theme="primary"
           type="button"
+          style={{ marginBottom: "20px" }}
         />
       </div>
     </div>

@@ -12,9 +12,7 @@ function Login() {
     if (!user) {
       try {
         Moralis.authenticate({ type: "sol" }).then(function (user) {
-          console.log(user.get("solAddress"));
           setLoggedIn(true);
-          alert("Login successful");
         });
       } catch (error) {
         console.log(error);
@@ -24,12 +22,11 @@ function Login() {
 
   async function disconnectWallet() {
     await Moralis.User.logOut();
-    console.log("logged out");
-    alert("Logout successful");
+    setLoggedIn(false);
   }
 
   return (
-    <div style={{ float: "right" }}>
+    <div style={{ float: "right", marginTop: "20px", marginRight: "40px" }}>
       {!loggedIn ? (
         <Button
           id="test-button-primary-large"
