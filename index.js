@@ -1,6 +1,8 @@
-import React, { useState } from "react";
-import { Input, TextArea, Button } from "web3uikit";
-import { actions, NodeWallet } from "@metaplex/js";
+import Head from "next/head";
+import Image from "next/image";
+import styles from "../styles/Home.module.css";
+import { useMoralis } from "react-moralis";
+import { actions, utils, programs, NodeWallet } from "@metaplex/js";
 import {
   clusterApiUrl,
   Connection,
@@ -8,13 +10,29 @@ import {
   LAMPORTS_PER_SOL,
   PublicKey,
 } from "@solana/web3.js";
-import { useMoralis } from "react-moralis";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 
-function NftForm() {
+export default function Home() {
   const { Moralis } = useMoralis();
-  const [nftName, setNFTName] = useState();
-  const [nftDesccriptiom, setNFTDescription] = useState();
+  async function login() {
+    let user = Moralis.User.current();
+    if (!user) {
+      try {
+        Moralis.authenticate({ type: "sol" }).then(function (user) {
+          console.log(user.get("solAddress"));
+          alert("Login successful");
+        });
+      } catch (error) {
+        console.log(error);
+      }
+    }
+  }
+
+  async function logOut() {
+    await Moralis.User.logOut();
+    console.log("logged out");
+    alert("Logout successful");
+  }
 
   const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
@@ -35,28 +53,30 @@ function NftForm() {
     console.log(associatedAddress);
   }
 
-  async function uploadAndMintNFT() {
+  async function toTheMoon() {
     // Storing the file
+    console.log("Uploading the image");
 
     const keypair = Keypair.generate();
     const wallet = new NodeWallet(keypair);
     let user = Moralis.User.current();
     const userWallet = new PublicKey(user.get("solAddress"));
 
+    console.log(keypair.publicKey.toBase58());
+
     const fileInput = document.getElementById("file");
     const data = fileInput.files[0];
-
     const imageFile = new Moralis.File(data.name, data);
     await imageFile.saveIPFS();
 
     // Storing the metadata
 
     const imageURI = imageFile.ipfs();
-
+    console.log("Image URI: ", imageURI);
     const metadata = {
-      name: nftName,
+      name: document.getElementById("metadataName").value,
       symbol: "MLH",
-      description: nftDesccriptiom,
+      description: document.getElementById("metadataDescription").value,
       image: imageURI,
       seller_fee_basis_points: 0,
       properties: {
@@ -79,9 +99,11 @@ function NftForm() {
     const metadataFile = new Moralis.File("metadata.json", {
       base64: btoa(JSON.stringify(metadata)),
     });
-
+    console.log("Uploading Metadata");
     await metadataFile.saveIPFS();
     const metadataURI = metadataFile.ipfs();
+    console.log(metadataURI);
+    alert("Upload successful");
 
     // minting
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -100,8 +122,13 @@ function NftForm() {
         maxSupply: 1,
       })
       .then((mintNFTResponse) => {
+        console.log(mintNFTResponse);
         mintaddress = mintNFTResponse.mint;
+        alert("Mint successful");
+        console.log("Mint address: ", mintaddress);
       });
+
+    // sending the token to the user
 
     await findAssociatedTokenAddress(keypair.publicKey, mintaddress);
 
@@ -116,62 +143,34 @@ function NftForm() {
       })
       .then((sendTokenResponse) => {
         console.log(sendTokenResponse);
-        alert("Yay!! Send successful. Check you wallet.");
+        alert("Send successful");
       });
   }
   return (
-    <div
-      style={{
-        margin: "auto auto",
-        width: "33%",
-        height: "400px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1 style={{ marginTop: "20%", fontFamily: "sans-serif" }}>
-          Upload and Mint your Cool NFTs
-        </h1>
-        <Input
-          width="100%"
-          label="NFT Name"
-          name="NFT Name"
-          onChange={(e) => setNFTName(e.target.value)}
-          style={{ marginBottom: "20px", marginTop: "30px" }}
-        />
-        <TextArea
-          width="100%"
-          label="NFT Description"
-          name="NFT Description"
-          onChange={(e) => setNFTDescription(e.target.value)}
-          style={{ marginBottom: "20px" }}
-        />
+    <div className={styles.container}>
+      Hello
+      <form>
         <input
-          type="file"
-          id="file"
-          style={{
-            marginBottom: "40px",
-            marginTop: "30px",
-            alignSelf: "center",
-          }}
+          type="text"
+          name="metadataName"
+          id="metadataName"
+          placeholder="Metadata Name"
         />
-        <Button
-          id="test-button-primary-large"
-          onClick={uploadAndMintNFT}
-          size="large"
-          text="Mint NFT"
-          theme="primary"
-          type="button"
-          style={{ marginBottom: "20px" }}
+        <br />
+        <br />
+        <input
+          type="text"
+          name="metadataDescription"
+          id="metadataDescription"
+          placeholder="Metadata Description"
         />
-      </div>
+        <br />
+        <br />
+        <input type="file" name="fileInput" id="file" placeholder="File" />
+      </form>
+      <button onClick={login}>Login</button>
+      <button onClick={logOut}>logout</button>
+      <button onClick={toTheMoon}>Upload</button>
     </div>
   );
 }
-
-export default NftForm;
