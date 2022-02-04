@@ -2,9 +2,7 @@ import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
 import { Button } from "web3uikit";
 
-function Login() {
-  const [loggedIn, setLoggedIn] = useState(false);
-
+function Login({ setLoggedIn, loggedIn }) {
   const { Moralis } = useMoralis();
 
   async function connectWallet() {

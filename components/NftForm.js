@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Input, TextArea, Button } from "web3uikit";
+import { Input, TextArea, Button, Icon, Modal } from "web3uikit";
 import { actions, NodeWallet } from "@metaplex/js";
 import {
   clusterApiUrl,
@@ -10,11 +10,13 @@ import {
 } from "@solana/web3.js";
 import { useMoralis } from "react-moralis";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
+import Image from "next/image";
 
-function NftForm() {
+function NftForm({ loggedIn }) {
   const { Moralis } = useMoralis();
   const [nftName, setNFTName] = useState();
   const [nftDesccriptiom, setNFTDescription] = useState();
+  const [succesModal, setSuccessModal] = useState(false);
 
   const SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID = new PublicKey(
     "ATokenGPvbdGVxr1b2hvZbsiqW5xWH25efTNsLJA8knL"
@@ -32,7 +34,6 @@ function NftForm() {
       SPL_ASSOCIATED_TOKEN_ACCOUNT_PROGRAM_ID
     );
     associatedAddress = array[0];
-    console.log(associatedAddress);
   }
 
   async function uploadAndMintNFT() {
@@ -47,12 +48,11 @@ function NftForm() {
     const data = fileInput.files[0];
 
     const imageFile = new Moralis.File(data.name, data);
-    await imageFile.saveIPFS();
+    await imageFile.saveIPFS().then();
 
     // Storing the metadata
 
     const imageURI = imageFile.ipfs();
-
     const metadata = {
       name: nftName,
       symbol: "MLH",
@@ -114,9 +114,8 @@ function NftForm() {
         wallet: wallet,
         mint: mintaddress,
       })
-      .then((sendTokenResponse) => {
-        console.log(sendTokenResponse);
-        alert("Yay!! Send successful. Check you wallet.");
+      .then(() => {
+        setSuccessModal(true);
       });
   }
   return (
@@ -134,8 +133,14 @@ function NftForm() {
           justifyContent: "space-between",
         }}
       >
-        <h1 style={{ marginTop: "20%", fontFamily: "sans-serif" }}>
-          Upload and Mint your Cool NFTs
+        <h1
+          style={{
+            marginTop: "20%",
+            fontFamily: "sans-serif",
+            textAlign: "center",
+          }}
+        >
+          Lightning NFT Minter
         </h1>
         <Input
           width="100%"
@@ -160,16 +165,56 @@ function NftForm() {
             alignSelf: "center",
           }}
         />
-        <Button
-          id="test-button-primary-large"
-          onClick={uploadAndMintNFT}
-          size="large"
-          text="Mint NFT"
-          theme="primary"
-          type="button"
-          style={{ marginBottom: "20px" }}
-        />
+        {loggedIn ? (
+          <Button
+            id="test-button-primary-large"
+            onClick={uploadAndMintNFT}
+            size="large"
+            text="Mint NFT"
+            theme="primary"
+            type="button"
+            style={{ marginBottom: "20px" }}
+          />
+        ) : (
+          <Button
+            id="test-button-primary-large"
+            onClick={uploadAndMintNFT}
+            size="large"
+            text="Connect Wallet to Mint NFT"
+            theme="primary"
+            type="button"
+            style={{ marginBottom: "20px" }}
+            disabled={true}
+          />
+        )}
       </div>
+
+      {succesModal ? (
+        <Modal
+          id="regular"
+          onCloseButtonPressed={() => setSuccessModal(false)}
+          onOk={() => setSuccessModal(false)}
+          title=""
+          isCancelDisabled={true}
+        >
+          <div
+            style={{
+              alignItems: "center",
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <Image src="/yayy-happy.gif" alt="yayy" height={200} width={300} />
+            <p>
+              Yayyy!!🎊 You have minted your cool NFT. Checkout out your phantom
+              wallet for surprise.🎊🎊
+            </p>
+          </div>
+        </Modal>
+      ) : (
+        <></>
+      )}
     </div>
   );
 }
