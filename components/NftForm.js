@@ -88,7 +88,7 @@ function NftForm({ loggedIn }) {
 
     const feePayerAirdropSignature = await connection.requestAirdrop(
       keypair.publicKey,
-      LAMPORTS_PER_SOL
+      10000000
     );
     await connection.confirmTransaction(feePayerAirdropSignature);
     let mintaddress = "";
