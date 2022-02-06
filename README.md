@@ -1,7 +1,7 @@
 # Sol-minter 
 
 A lightning-fast NFT minter on Solana. The UI is made simple so that the audience who is new to the Web3 world can also utilize it.
-The function is to allow the user to upload any image that he/she likes and the dApp converts that into an NFT and delivers it to the User's wallet. 
+The function is to allow the user to upload any image that he/she likes and the dApp converts that into an NFT and delivers it to the user's wallet. 
 
 ## Workflow
 - User logs in via Phantom Wallet 
