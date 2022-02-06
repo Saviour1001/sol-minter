@@ -2,14 +2,15 @@ import Login from "../components/Login";
 import NftForm from "../components/NftForm";
 import Image from "next/image";
 import { useState } from "react";
+import styles from "../styles/Home.module.css";
 
 function Home() {
   const [loggedIn, setLoggedIn] = useState(false);
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <div style={{ marginLeft: "20px", marginTop: "10px" }}>
+      <div className={styles.homeContainer}>
+        <div className={styles.homeContainer}>
+          <div className={styles.mlhImg}>
             <Image
               src="/mlh-logo-color.png"
               height={50}
@@ -17,13 +18,7 @@ function Home() {
               alt="mlh_logo"
             />
           </div>
-          <div
-            style={{
-              marginTop: "20px",
-              marginRight: "20px",
-              marginLeft: "20px",
-            }}
-          >
+          <div className={styles.xImage}>
             <Image
               src="/x-icon-white-20.jpg"
               height={30}
@@ -31,7 +26,7 @@ function Home() {
               alt="mlh_logo"
             />
           </div>
-          <div style={{ marginTop: "10px" }}>
+          <div className={styles.solanaImg}>
             <Image
               src="/solanaLogoMark.png"
               height={50}

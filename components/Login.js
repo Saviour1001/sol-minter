@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
 import { Button } from "web3uikit";
+import styles from "./Login.module.css";
 
 function Login({ setLoggedIn, loggedIn }) {
   const { Moralis } = useMoralis();
@@ -24,7 +25,7 @@ function Login({ setLoggedIn, loggedIn }) {
   }
 
   return (
-    <div style={{ float: "right", marginTop: "20px", marginRight: "40px" }}>
+    <div className={styles.loginContainer}>
       {!loggedIn ? (
         <Button
           id="test-button-primary-large"

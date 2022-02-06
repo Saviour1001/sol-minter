@@ -11,6 +11,7 @@ import {
 import { useMoralis } from "react-moralis";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import Image from "next/image";
+import styles from "./NftForm.module.css";
 
 function NftForm({ loggedIn }) {
   const { Moralis } = useMoralis();
@@ -119,52 +120,24 @@ function NftForm({ loggedIn }) {
       });
   }
   return (
-    <div
-      style={{
-        margin: "auto auto",
-        width: "33%",
-        height: "400px",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-        }}
-      >
-        <h1
-          style={{
-            marginTop: "20%",
-            fontFamily: "sans-serif",
-            textAlign: "center",
-          }}
-        >
-          Lightning NFT Minter
-        </h1>
+    <div className={styles.mainContainer}>
+      <div className={styles.innerContainer}>
+        <h1 className={styles.heading}>Lightning NFT Minter</h1>
         <Input
           width="100%"
           label="NFT Name"
           name="NFT Name"
           onChange={(e) => setNFTName(e.target.value)}
-          style={{ marginBottom: "20px", marginTop: "30px" }}
+          className={styles.inputName}
         />
         <TextArea
           width="100%"
           label="NFT Description"
           name="NFT Description"
           onChange={(e) => setNFTDescription(e.target.value)}
-          style={{ marginBottom: "20px" }}
+          className={styles.inputDes}
         />
-        <input
-          type="file"
-          id="file"
-          style={{
-            marginBottom: "40px",
-            marginTop: "30px",
-            alignSelf: "center",
-          }}
-        />
+        <input type="file" id="file" className={styles.inputFile} />
         {loggedIn ? (
           <Button
             id="test-button-primary-large"
@@ -173,7 +146,7 @@ function NftForm({ loggedIn }) {
             text="Mint NFT"
             theme="primary"
             type="button"
-            style={{ marginBottom: "20px" }}
+            className={styles.btnMargin}
           />
         ) : (
           <Button
@@ -183,7 +156,7 @@ function NftForm({ loggedIn }) {
             text="Connect Wallet to Mint NFT"
             theme="primary"
             type="button"
-            style={{ marginBottom: "20px" }}
+            className={styles.btnMargin}
             disabled={true}
           />
         )}
@@ -197,14 +170,7 @@ function NftForm({ loggedIn }) {
           title=""
           isCancelDisabled={true}
         >
-          <div
-            style={{
-              alignItems: "center",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
+          <div className={styles.modalContainer}>
             <Image src="/yayy-happy.gif" alt="yayy" height={200} width={300} />
             <p>
               Yayyy!!🎊 You have minted your cool NFT. Checkout out your phantom
