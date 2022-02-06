@@ -8,7 +8,7 @@ The function is to allow the user to upload any image that he/she likes and the 
 - User fills in the details like the funky NFT Name and its awesome description and also uploads the image. 
 - After hitting Submit, blockchain magic happens and within a few seconds, the image is now an NFT delivered to the User's wallet. 
 
-## Functioning ( Blockchain Magic)
+## Functioning (Blockchain Magic)
 
 - On the backend side of the website after collecting the data from the User, the image gets uploaded to Inter Planetary File System ( IPFS ) which is a decentralized platform to store files. 
 - The rest details are added with the image URI in a JSON file that follows the JSON Schema required by the Solana Ecosystem to mint the NFT. 
