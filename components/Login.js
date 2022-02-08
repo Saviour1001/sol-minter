@@ -1,7 +1,5 @@
 import React, { useState } from "react";
 import { useMoralis } from "react-moralis";
-import { Button } from "web3uikit";
-import styles from "./Login.module.css";
 
 function Login({ setLoggedIn, loggedIn }) {
   const { Moralis } = useMoralis();
@@ -25,25 +23,23 @@ function Login({ setLoggedIn, loggedIn }) {
   }
 
   return (
-    <div className={styles.loginContainer}>
+    <div className="loginContainer">
       {!loggedIn ? (
-        <Button
-          id="test-button-primary-large"
+        <button
+          type="button"
           onClick={connectWallet}
-          size="large"
-          text="Connect Wallet"
-          theme="primary"
-          type="button"
-        />
+          className="btn btn-secondary"
+        >
+          Connect Wallet
+        </button>
       ) : (
-        <Button
-          id="test-button-primary-large"
-          onClick={disconnectWallet}
-          size="large"
-          text="Disconnect Wallet"
-          theme="primary"
+        <button
           type="button"
-        />
+          onClick={disconnectWallet}
+          className="btn btn-secondary"
+        >
+          Disconnect Wallet
+        </button>
       )}
     </div>
   );
