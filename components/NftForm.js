@@ -1,17 +1,9 @@
 import React, { useState } from "react";
-import { Input, TextArea, Button, Icon, Modal } from "web3uikit";
 import { actions, NodeWallet } from "@metaplex/js";
-import {
-  clusterApiUrl,
-  Connection,
-  Keypair,
-  LAMPORTS_PER_SOL,
-  PublicKey,
-} from "@solana/web3.js";
+import { clusterApiUrl, Connection, Keypair, PublicKey } from "@solana/web3.js";
 import { useMoralis } from "react-moralis";
 import { TOKEN_PROGRAM_ID } from "@solana/spl-token";
 import Image from "next/image";
-import styles from "./NftForm.module.css";
 
 function NftForm({ loggedIn }) {
   const { Moralis } = useMoralis();
@@ -39,7 +31,7 @@ function NftForm({ loggedIn }) {
 
   async function uploadAndMintNFT() {
     // Storing the file
-
+    console.log("Btn clciked");
     const keypair = Keypair.generate();
     const wallet = new NodeWallet(keypair);
     let user = Moralis.User.current();
@@ -83,6 +75,7 @@ function NftForm({ loggedIn }) {
 
     await metadataFile.saveIPFS();
     const metadataURI = metadataFile.ipfs();
+    console.log(metadataURI);
 
     // minting
     const connection = new Connection(clusterApiUrl("devnet"), "confirmed");
@@ -102,6 +95,7 @@ function NftForm({ loggedIn }) {
       })
       .then((mintNFTResponse) => {
         mintaddress = mintNFTResponse.mint;
+        console.log("nft minted");
       });
 
     await findAssociatedTokenAddress(keypair.publicKey, mintaddress);
@@ -115,71 +109,95 @@ function NftForm({ loggedIn }) {
         wallet: wallet,
         mint: mintaddress,
       })
-      .then(() => {
+      .then((res) => {
         setSuccessModal(true);
+        console.log("nft sent");
       });
   }
   return (
-    <div className={styles.mainContainer}>
-      <div className={styles.innerContainer}>
-        <h1 className={styles.heading}>Lightning NFT Minter</h1>
-        <Input
-          width="100%"
-          label="NFT Name"
-          name="NFT Name"
-          onChange={(e) => setNFTName(e.target.value)}
-          className={styles.inputName}
-        />
-        <TextArea
-          width="100%"
-          label="NFT Description"
-          name="NFT Description"
-          onChange={(e) => setNFTDescription(e.target.value)}
-          className={styles.inputDes}
-        />
-        <input type="file" id="file" className={styles.inputFile} />
+    <div className="mainContainer">
+      <div className="innerContainer">
+        <h1 className="heading">Lightning NFT Minter</h1>
+        <div className="mb-3 mt-4">
+          <label className="form-label">NFT Name</label>
+          <input
+            type="text"
+            className="form-control"
+            id="nftname"
+            placeholder="Cool NFT..."
+            onChange={(e) => setNFTName(e.target.value)}
+          />
+        </div>
+        <div className="mb-3 mt-3">
+          <label className="form-label">NFT Description</label>
+          <textarea
+            className="form-control"
+            id="nftdescription"
+            placeholder="Description..."
+            onChange={(e) => setNFTDescription(e.target.value)}
+            rows="3"
+          ></textarea>
+        </div>
+
+        <input type="file" id="file" className="inputFile" />
         {loggedIn ? (
-          <Button
-            id="test-button-primary-large"
+          <button
+            className="btnMargin btn btn-secondary"
             onClick={uploadAndMintNFT}
-            size="large"
-            text="Mint NFT"
-            theme="primary"
-            type="button"
-            className={styles.btnMargin}
-          />
+          >
+            Mint NFT
+          </button>
         ) : (
-          <Button
-            id="test-button-primary-large"
-            onClick={uploadAndMintNFT}
-            size="large"
-            text="Connect Wallet to Mint NFT"
-            theme="primary"
-            type="button"
-            className={styles.btnMargin}
-            disabled={true}
-          />
+          <button className="btnMargin btn btn-secondary disabled">
+            Connect Wallet to Mint NFT
+          </button>
         )}
       </div>
 
-      {succesModal ? (
-        <Modal
-          id="regular"
-          onCloseButtonPressed={() => setSuccessModal(false)}
-          onOk={() => setSuccessModal(false)}
-          title=""
-          isCancelDisabled={true}
-        >
-          <div className={styles.modalContainer}>
-            <Image src="/yayy-happy.gif" alt="yayy" height={200} width={300} />
-            <p>
-              Yayyy!!🎊 You have minted your cool NFT. Checkout out your phantom
-              wallet for surprise.🎊🎊
-            </p>
-          </div>
-        </Modal>
-      ) : (
+      {!succesModal ? (
         <></>
+      ) : (
+        <>
+          <div className="modal">
+            <div className="modal-dialog">
+              <div className="modal-content">
+                <div className="modal-header">
+                  <h5 className="modal-title">Modal title</h5>
+                  <button
+                    type="button"
+                    className="btn-close"
+                    data-bs-dismiss="modal"
+                    aria-label="Close"
+                  ></button>
+                </div>
+                <div className="modal-body">
+                  <Image
+                    src="/yayy-happy.gif"
+                    alt="yayy"
+                    height={200}
+                    width={300}
+                  />
+                  <p>
+                    Yayyy!!🎊 You have minted your cool NFT. Checkout out your
+                    phantom wallet for surprise.🎊🎊
+                  </p>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    data-bs-dismiss="modal"
+                  >
+                    Close
+                  </button>
+                  <button type="button" className="btn btn-primary">
+                    Save changes
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </div>
   );

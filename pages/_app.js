@@ -1,4 +1,8 @@
 import { MoralisProvider } from "react-moralis";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../components/Login.css";
+import "../components/NftForm.css";
+import "../styles/home.css";
 
 function MyApp({ Component, pageProps }) {
   return (
